@@ -82,8 +82,8 @@ If the frog returns to setup, use the password currently shown on the gadget and
 
 | Control | Action |
 | --- | --- |
-| Tap the idle screen | Make the frog hop and wink |
-| Swipe left or right on the idle screen | Switch between Classic, Wizard, and Garden |
+| Tap the idle screen | Send a star around the Astronaut helmet, or make the frog hop and wink in the other themes |
+| Swipe left or right on the idle screen | Switch between Classic, Wizard, Garden, and Astronaut |
 | Hold the top button, then release | Talk and send a question |
 | Double-tap the top button | Start or stop a long transcript |
 | Tap the top button | Deep sleep when idle. During a long recording, turn off the screen and keep recording. |

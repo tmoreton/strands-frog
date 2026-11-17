@@ -22,6 +22,10 @@
 #define FROG_COMPACT_Y 38
 #define FROG_RECORDING_Y 145
 #define FROG_ACCESSORY_Y 32
+#define STAR_ORBIT_MS 1050
+#define STAR_ORBIT_CENTER_Y 67
+#define STAR_ORBIT_RADIUS_X 110
+#define STAR_ORBIT_RADIUS_Y 58
 #define HOME_SWIPE_PX 54
 #define HOME_TAP_SLOP_PX 18
 #define HOME_TAP_MS 400
@@ -115,6 +119,7 @@ static esp_lcd_panel_handle_t display_panel;
 static bool display_sleeping;
 static lv_obj_t *frog;
 static lv_obj_t *frog_accessory;
+static lv_obj_t *frog_orbit_star_image;
 static lv_timer_t *frog_timer;
 static const frog_motion_t *active_motion;
 static size_t frame_index;
@@ -135,6 +140,7 @@ typedef enum {
     FROG_THEME_CLASSIC,
     FROG_THEME_WIZARD,
     FROG_THEME_GARDEN,
+    FROG_THEME_ASTRONAUT,
     FROG_THEME_COUNT,
 } frog_theme_t;
 
@@ -329,6 +335,16 @@ void board_ui_set_audio_level(unsigned level)
     atomic_store_explicit(&audio_level, level > 100 ? 100 : level, memory_order_relaxed);
 }
 
+static void position_frog_accessory(int32_t x, int32_t y)
+{
+    int32_t accessory_y = frog_theme == FROG_THEME_ASTRONAUT ? y : y - FROG_ACCESSORY_Y;
+    if (frog_theme == FROG_THEME_WIZARD) {
+        // Keep the hat tip on the round panel during the compact reply hop.
+        accessory_y = LV_MAX(accessory_y, 6);
+    }
+    lv_obj_set_pos(frog_accessory, x, accessory_y);
+}
+
 static void show_frog_sprite(frog_sprite_t pose, int32_t x, int32_t y)
 {
     const lv_image_dsc_t *sprite = &frog_sprites[pose];
@@ -336,12 +352,7 @@ static void show_frog_sprite(frog_sprite_t pose, int32_t x, int32_t y)
         lv_image_set_src(frog, sprite);
     }
     lv_obj_set_pos(frog, x, y);
-    int32_t accessory_y = y - FROG_ACCESSORY_Y;
-    if (frog_theme == FROG_THEME_WIZARD) {
-        // Keep the hat tip on the round panel during the compact reply hop.
-        accessory_y = LV_MAX(accessory_y, 6);
-    }
-    lv_obj_set_pos(frog_accessory, x, accessory_y);
+    position_frog_accessory(x, y);
 }
 
 static void show_frog_frame(void)
@@ -407,11 +418,49 @@ static void animate_frog(const frog_motion_t *motion, int32_t y)
     }
 }
 
+static void move_star_along_orbit(void *image, int32_t angle)
+{
+    int32_t x = lv_obj_get_style_x(frog, LV_PART_MAIN);
+    int32_t y = lv_obj_get_style_y(frog, LV_PART_MAIN) + STAR_ORBIT_CENTER_Y;
+    x += STAR_ORBIT_RADIUS_X * lv_trigo_cos(angle) / (1 << LV_TRIGO_SHIFT);
+    y += STAR_ORBIT_RADIUS_Y * lv_trigo_sin(angle) / (1 << LV_TRIGO_SHIFT);
+    lv_obj_set_pos(image, x, y - frog_orbit_star.header.h / 2);
+}
+
+static void hide_orbit_star(lv_anim_t *animation)
+{
+    lv_obj_add_flag(animation->var, LV_OBJ_FLAG_HIDDEN);
+}
+
+static void start_star_orbit(void)
+{
+    lv_anim_t orbit;
+    lv_anim_init(&orbit);
+    lv_anim_set_var(&orbit, frog_orbit_star_image);
+    lv_anim_set_exec_cb(&orbit, move_star_along_orbit);
+    lv_anim_set_values(&orbit, 0, 360);
+    lv_anim_set_duration(&orbit, STAR_ORBIT_MS);
+    lv_anim_set_deleted_cb(&orbit, hide_orbit_star);
+    if (lv_anim_start(&orbit) != NULL) {
+        lv_obj_remove_flag(frog_orbit_star_image, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+static void cancel_star_orbit(void)
+{
+    lv_anim_delete(frog_orbit_star_image, move_star_along_orbit);
+}
+
 static void cycle_frog_theme(int direction)
 {
+    cancel_star_orbit();
     frog_theme = (frog_theme + FROG_THEME_COUNT + direction) % FROG_THEME_COUNT;
     if (frog_theme != FROG_THEME_CLASSIC) {
-        lv_image_set_src(frog_accessory, &frog_theme_overlays[frog_theme - FROG_THEME_WIZARD]);
+        const lv_image_dsc_t *overlay = frog_theme == FROG_THEME_ASTRONAUT ?
+                                        &frog_astronaut_helmet : &frog_theme_overlays[frog_theme - FROG_THEME_WIZARD];
+        lv_image_set_src(frog_accessory, overlay);
+        position_frog_accessory(lv_obj_get_style_x(frog, LV_PART_MAIN),
+                                lv_obj_get_style_y(frog, LV_PART_MAIN));
     }
     lv_obj_set_flag(frog_accessory, LV_OBJ_FLAG_HIDDEN, frog_theme == FROG_THEME_CLASSIC);
 }
@@ -449,7 +498,11 @@ static void on_home_touch(lv_event_t *event)
         if (LV_ABS(dx) >= HOME_SWIPE_PX && LV_ABS(dx) > LV_ABS(dy)) {
             cycle_frog_theme(dx < 0 ? 1 : -1);
         } else if (!home_touch.moved && lv_tick_elaps(home_touch.started_at) < HOME_TAP_MS) {
-            animate_frog(&tap_motion, frog_y);
+            if (frog_theme == FROG_THEME_ASTRONAUT) {
+                start_star_orbit();
+            } else {
+                animate_frog(&tap_motion, frog_y);
+            }
         }
     }
 }
@@ -511,6 +564,7 @@ static void show_panel(panel_view_t view)
         init_panel(lv_screen_active());
     }
     home_touch.active = false;
+    cancel_star_orbit();
     panel_view = view;
     bool home = view == PANEL_HOME;
     bool settings = view == PANEL_SETTINGS;
@@ -886,6 +940,13 @@ void board_ui_init(unsigned volume, esp_err_t (*save_volume)(unsigned), esp_err_
     lv_obj_set_align(frog_accessory, LV_ALIGN_TOP_MID);
     lv_obj_remove_flag(frog_accessory, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(frog_accessory, LV_OBJ_FLAG_HIDDEN);
+
+    frog_orbit_star_image = lv_image_create(screen);
+    lv_image_set_src(frog_orbit_star_image, &frog_orbit_star);
+    lv_obj_set_align(frog_orbit_star_image, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(frog_orbit_star_image, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(frog_orbit_star_image, LV_OBJ_FLAG_HIDDEN);
+
     frog_timer = lv_timer_create(next_frog_frame, 1000, NULL);
     if (frog_timer != NULL) {
         lv_timer_pause(frog_timer);
@@ -923,6 +984,7 @@ static void show_voice_state(board_ui_state_t state, const char *detail)
     bool compact = show_reply || state == BOARD_UI_ERROR;
     if ((int)state != active_state) {
         home_touch.active = false;
+        cancel_star_orbit();
         active_state = state;
         update_home_text_visibility();
         if (!show_reply) {

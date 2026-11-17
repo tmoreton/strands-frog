@@ -78,6 +78,17 @@ def draw_overlay(path, width, height):
     return Image.open(io.BytesIO(png)).convert("RGBA").resize((width, height), Image.Resampling.LANCZOS)
 
 
+def overlay_bytes(name, width, height):
+    return draw_overlay(ASSETS / name, width, height).tobytes("raw", "BGRA")
+
+
+def read_dimensions(header, name):
+    return tuple(
+        int(re.search(rf"^#define {name}_{dimension} (\d+)$", header, re.MULTILINE)[1])
+        for dimension in ("WIDTH", "HEIGHT")
+    )
+
+
 def main():
     art = (ASSETS / "charm-frog.svg").read_text()
     svg = ET.fromstring(art)
@@ -93,13 +104,12 @@ def main():
     frames = (pack_rgb565(draw_pose(art, width, height, **POSES[pose])) for pose in poses)
     (ASSETS / "frog_frames.rgb565").write_bytes(b"".join(frames))
 
-    width, height = (
-        int(re.search(rf"^#define FROG_THEME_OVERLAY_{dimension} (\d+)$", header, re.MULTILINE)[1])
-        for dimension in ("WIDTH", "HEIGHT")
-    )
-    overlays = (draw_overlay(ASSETS / name, width, height).tobytes("raw", "BGRA") for name in THEME_OVERLAYS)
+    overlays = (overlay_bytes(name, *read_dimensions(header, "FROG_THEME_OVERLAY")) for name in THEME_OVERLAYS)
     (ASSETS / "frog_theme_overlays.argb8888").write_bytes(b"".join(overlays))
 
+    helmet = overlay_bytes("astronaut-helmet.svg", width, height)
+    star = overlay_bytes("orbit-star.svg", *read_dimensions(header, "FROG_ORBIT_STAR"))
+    (ASSETS / "frog_astronaut.argb8888").write_bytes(helmet + star)
 
 if __name__ == "__main__":
     main()

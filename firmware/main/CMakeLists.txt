@@ -1,5 +1,6 @@
 set(frog_frames "${CMAKE_CURRENT_SOURCE_DIR}/../assets/frog_frames.rgb565")
 set(frog_theme_overlays "${CMAKE_CURRENT_SOURCE_DIR}/../assets/frog_theme_overlays.argb8888")
+set(frog_astronaut "${CMAKE_CURRENT_SOURCE_DIR}/../assets/frog_astronaut.argb8888")
 set(frog_frames_asm "${CMAKE_CURRENT_BINARY_DIR}/frog_frames.S")
 idf_component_register(
     SRCS "main.c" "voice_client.c" "long_transcript.c" "board_ui.c" "frog_sprites.c" "wifi_setup.c" "portal_dns.c"
@@ -12,7 +13,8 @@ idf_component_register(
 )
 
 configure_file("frog_frames.S.in" "${frog_frames_asm}" @ONLY)
-set_source_files_properties("${frog_frames_asm}" PROPERTIES OBJECT_DEPENDS "${frog_frames};${frog_theme_overlays}")
+set_source_files_properties("${frog_frames_asm}" PROPERTIES
+    OBJECT_DEPENDS "${frog_frames};${frog_theme_overlays};${frog_astronaut}")
 
 set(cloud_settings "${CMAKE_CURRENT_SOURCE_DIR}/cloud_settings.h")
 if(NOT EXISTS "${cloud_settings}")

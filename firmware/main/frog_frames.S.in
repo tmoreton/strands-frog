@@ -9,3 +9,9 @@ frog_frame_pixels:
 .global frog_theme_overlay_pixels
 frog_theme_overlay_pixels:
 .incbin "@frog_theme_overlays@"
+
+.section .rodata.frog_astronaut, "a"
+.balign 4
+.global frog_astronaut_pixels
+frog_astronaut_pixels:
+.incbin "@frog_astronaut@"

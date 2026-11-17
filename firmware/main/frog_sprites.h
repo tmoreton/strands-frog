@@ -6,6 +6,8 @@
 #define FROG_SPRITE_HEIGHT 176
 #define FROG_THEME_OVERLAY_WIDTH 168
 #define FROG_THEME_OVERLAY_HEIGHT 64
+#define FROG_ORBIT_STAR_WIDTH 28
+#define FROG_ORBIT_STAR_HEIGHT 28
 
 typedef enum {
     FROG_IDLE,
@@ -30,3 +32,5 @@ extern const lv_image_dsc_t frog_sprites[FROG_SPRITE_COUNT];
 
 // Wizard at index 0, Garden at index 1.
 extern const lv_image_dsc_t frog_theme_overlays[2];
+extern const lv_image_dsc_t frog_astronaut_helmet;
+extern const lv_image_dsc_t frog_orbit_star;

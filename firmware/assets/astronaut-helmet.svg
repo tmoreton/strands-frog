@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="216" height="176" viewBox="0 0 216 176">
+  <title>Astronaut helmet</title>
+  <defs>
+    <radialGradient id="glass" cx=".46" cy=".48" r=".64">
+      <stop offset=".52" stop-color="#bcecff" stop-opacity="0"/>
+      <stop offset=".84" stop-color="#9bd9fc" stop-opacity=".11"/>
+      <stop offset="1" stop-color="#c8f3ff" stop-opacity=".43"/>
+    </radialGradient>
+    <linearGradient id="glass-rim" x1="0" y1="0" x2=".73" y2="1">
+      <stop stop-color="#f1fcff"/>
+      <stop offset=".38" stop-color="#a4e3ff"/>
+      <stop offset=".71" stop-color="#6c91d6"/>
+      <stop offset="1" stop-color="#c8eeff"/>
+    </linearGradient>
+    <linearGradient id="collar" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#effaff"/>
+      <stop offset=".55" stop-color="#c6e6f5"/>
+      <stop offset="1" stop-color="#7da7cc"/>
+    </linearGradient>
+    <linearGradient id="gasket" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#395887"/>
+      <stop offset="1" stop-color="#82b5dd"/>
+    </linearGradient>
+  </defs>
+  <path d="M109 3C58 3 21 24 17 61C13 101 34 128 67 140
+    C92 149 127 149 153 138C185 125 202 100 200 65C197 25 159 3 109 3Z"
+    fill="url(#glass)" stroke="#253e63" stroke-width="3.5"/>
+  <path d="M109 3C58 3 21 24 17 61C13 101 34 128 67 140
+    C92 149 127 149 153 138C185 125 202 100 200 65C197 25 159 3 109 3Z"
+    fill="none" stroke="url(#glass-rim)" stroke-width="2.4"/>
+  <path d="M26 62C29 43 40 29 57 22M65 18l8-3"
+    fill="none" stroke="#eaffff" stroke-opacity=".92" stroke-width="3.1" stroke-linecap="round"/>
+  <path d="M187 44Q194 55 194 69M191 86q-1 5-3 9"
+    fill="none" stroke="#a1e6ff" stroke-opacity=".51" stroke-width="2.1" stroke-linecap="round"/>
+  <path d="M23 91Q28 114 48 128M174 117l-7 6"
+    fill="none" stroke="#a3caff" stroke-opacity=".38" stroke-width="2" stroke-linecap="round"/>
+  <path d="M57 129Q108 145 160 127L159 145Q108 159 58 145Z"
+    fill="url(#collar)" stroke="#28496e" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M58 130Q108 144 159 129L159 134Q108 151 58 135Z"
+    fill="url(#gasket)"/>
+  <path d="M66 140Q108 151 151 139"
+    fill="none" stroke="#f0fcff" stroke-opacity=".9" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M102 144h12l-1 6h-10Z" fill="#315284" stroke="#f0fcff" stroke-width="1"/>
+  <circle cx="108" cy="147" r="1.3" fill="#7affd7"/>
+</svg>
