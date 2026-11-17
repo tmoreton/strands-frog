@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="168" height="64" viewBox="0 0 168 64">
+  <title>Wizard hat</title>
+  <defs>
+    <linearGradient id="felt" x1="0" y1="0" x2=".8" y2="1">
+      <stop stop-color="#bd9bfc"/>
+      <stop offset=".48" stop-color="#8256d4"/>
+      <stop offset="1" stop-color="#442089"/>
+    </linearGradient>
+    <linearGradient id="brim" x1="0" y1="0" x2=".8" y2="1">
+      <stop stop-color="#ab7cfc"/>
+      <stop offset="1" stop-color="#4c2991"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f7a3e4"/>
+      <stop offset="1" stop-color="#aa4ab7"/>
+    </linearGradient>
+    <path id="spark" d="M0-6Q.7-.7 6 0Q.7.7 0 6Q-.7.7-6 0Q-.7-.7 0-6Z"/>
+  </defs>
+  <path d="M25 39Q44 40 59 35Q76 29 92 34Q120 40 143 37
+    Q149 36 146 42Q139 51 119 51Q104 51 85 47Q62 51 43 49Q28 47 25 39Z"
+    fill="url(#brim)" stroke="#3b206a" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M48 43Q60 36 69 22Q84 1 104 3Q118 3 127 11
+    Q114 9 107 15Q105 28 117 39Q92 50 48 43Z"
+    fill="url(#felt)" stroke="#432583" stroke-width="1.7" stroke-linejoin="round"/>
+  <path d="M59 39Q70 30 77 19Q88 5 102 6M30 42Q37 46 48 46"
+    fill="none" stroke="#e8ceff" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M48 42Q57 36 62 32Q87 39 109 33Q112 36 117 39Q95 48 48 43Z"
+    fill="url(#ribbon)" stroke="#5f328f" stroke-width="1"/>
+  <path d="M64 36Q86 42 106 37" fill="none" stroke="#fed5f5"
+    stroke-opacity=".55" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="m85 35 1.8 3.6 4 .6-2.9 2.9.6 4-3.5-1.9-3.5 1.9.6-4-2.9-2.9 4-.6Z"
+    fill="#ffdf7b" stroke="#996827" stroke-width=".8" stroke-linejoin="round"/>
+  <g fill="#ffe296">
+    <use href="#spark" transform="translate(21 19) scale(.85)"/>
+    <use href="#spark" transform="translate(143 19) scale(1.02)"/>
+    <use href="#spark" transform="translate(130 30) scale(.54)"/>
+    <circle cx="35" cy="28" r="1.25"/>
+    <circle cx="153" cy="28" r="1.45"/>
+    <circle cx="29" cy="10" r="1"/>
+  </g>
+  <g fill="#f2cafc" opacity=".85">
+    <use href="#spark" transform="translate(10 32) scale(.45)"/>
+    <use href="#spark" transform="translate(158 12) scale(.5)"/>
+    <circle cx="137" cy="9" r="1.35"/>
+  </g>
+</svg>

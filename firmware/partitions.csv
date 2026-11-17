@@ -1,0 +1,5 @@
+# Preserve the original board's NVS, PHY calibration, and factory app offsets.
+# Name,   Type, SubType, Offset,   Size,     Flags
+nvs,      data, nvs,     0x3b000,  0xd2000,
+phy_init, data, phy,     0x10f000, 0x1000,
+factory,  app,  factory, 0x200000, 6M,

@@ -1,0 +1,14 @@
+.DS_Store
+.env
+.env.*
+*.bin
+*.elf
+*.map
+*.zip
+__pycache__/
+/.venv/
+/cloud/.lambda-build.*/
+/cloud/.python/
+/cloud/.uv-cache/
+/private/
+/recovery/

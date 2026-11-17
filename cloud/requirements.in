@@ -1,0 +1,2 @@
+boto3>=1.41,<2
+strands-agents[openai]==1.64.0

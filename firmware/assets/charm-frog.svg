@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="216" height="176" viewBox="0 0 216 176">
+  <title>Strands Frog</title>
+  <defs>
+    <radialGradient id="skin" cx="34%" cy="18%" r="90%">
+      <stop stop-color="#ddff92"/>
+      <stop offset=".36" stop-color="#a2ee66"/>
+      <stop offset=".74" stop-color="#54bc56"/>
+      <stop offset="1" stop-color="#187b50"/>
+    </radialGradient>
+    <radialGradient id="body" cx="42%" cy="18%" r="84%">
+      <stop stop-color="#8be176"/>
+      <stop offset=".72" stop-color="#3da956"/>
+      <stop offset="1" stop-color="#146347"/>
+    </radialGradient>
+    <linearGradient id="belly" x2="0" y2="1">
+      <stop stop-color="#f3ffbb"/>
+      <stop offset="1" stop-color="#9bdc73"/>
+    </linearGradient>
+    <linearGradient id="paw" x1="0" y1="1" x2="1" y2="0">
+      <stop stop-color="#278f50"/>
+      <stop offset=".53" stop-color="#78cc60"/>
+      <stop offset="1" stop-color="#c9f881"/>
+    </linearGradient>
+    <linearGradient id="eye" x2="0" y2="1">
+      <stop stop-color="#fffff0"/>
+      <stop offset=".75" stop-color="#f0ffcb"/>
+      <stop offset="1" stop-color="#c4e799"/>
+    </linearGradient>
+    <linearGradient id="iris" x2="0" y2="1">
+      <stop stop-color="#183527"/>
+      <stop offset=".65" stop-color="#09271d"/>
+      <stop offset="1" stop-color="#2c7255"/>
+    </linearGradient>
+    <radialGradient id="blush">
+      <stop stop-color="#ff9a93" stop-opacity=".95"/>
+      <stop offset=".68" stop-color="#f9a297" stop-opacity=".67"/>
+      <stop offset="1" stop-color="#f4b488" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="shadow">
+      <stop stop-color="#226344" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#226344" stop-opacity="0"/>
+    </radialGradient>
+    <g id="eye-open">
+      <ellipse cy="2" rx="22.5" ry="25.5" fill="#2b924b"/>
+      <ellipse rx="20.5" ry="23.5" fill="url(#eye)"/>
+    </g>
+    <g id="pupil">
+      <ellipse cx="1" cy="3" rx="12.8" ry="16.8" fill="url(#iris)"/>
+      <ellipse cx="-4" cy="-4" rx="4.9" ry="5.7" fill="#fffdeb"/>
+      <circle cx="6.8" cy="10" r="2.2" fill="#b0f3a4" opacity=".85"/>
+    </g>
+    <path id="eye-closed" d="M-16 2 Q0 15 16 2" fill="none" stroke="#214f32" stroke-width="4" stroke-linecap="round"/>
+    <path id="eye-wink" d="M-16 5 Q0 -10 16 5" fill="none" stroke="#214f32" stroke-width="4" stroke-linecap="round"/>
+    <path id="mouth-smile" d="M-15 -2 C-9 7 8 9 17 -2" fill="none" stroke="#1d5133" stroke-width="3.5" stroke-linecap="round"/>
+    <path id="mouth-worry" d="M-12 4 Q0 -7 12 4" fill="none" stroke="#24553a" stroke-width="3.5" stroke-linecap="round"/>
+    <path id="mouth-think" d="M-9 1 Q-2 6 6 0" fill="none" stroke="#24553a" stroke-width="3.5" stroke-linecap="round"/>
+    <g id="mouth-small">
+      <path d="M-10 -1 Q0 3 10 -1 C11 11 -11 11 -10 -1Z" fill="#20382d"/>
+      <path d="M-5 6 Q0 1 5 6 Q0 9 -5 6Z" fill="#ee8987"/>
+    </g>
+    <g id="mouth-wide">
+      <path d="M-18 -4 Q0 0 18 -4 C17 18 -17 18 -18 -4Z" fill="#23382e"/>
+      <path d="M-11 8 Q-6 3 0 6 Q5 2 11 8 Q1 16 -11 8Z" fill="#f99090"/>
+    </g>
+    <g id="mouth-happy">
+      <path d="M-21 -4 Q0 4 21 -4 C16 17 -16 17 -21 -4Z" fill="#23382e"/>
+      <path d="M-10 8 Q0 0 10 8 Q1 14 -10 8Z" fill="#f99090"/>
+    </g>
+    <path id="foot" d="M37 130 C30 132 24 144 23 151 C18 156 23 163 31 163 H66 C77 161 78 153 72 146 C62 133 49 126 37 130Z"/>
+    <g id="forearm">
+      <path d="M-7 1 C1 -6 9 -3 12 6 L17 26
+        C21 24 24 29 23 33 L21 39 C28 39 29 46 24 49
+        C21 51 17 49 14 47 C15 54 7 56 4 50 L1 44
+        C-3 48 -9 45 -8 39 L-6 29 C-10 18 -13 8 -7 1Z"
+        fill="url(#paw)" stroke="#25593b" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M-2 5 Q4 0 7 8 L12 25" fill="none" stroke="#d5f79d" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
+      <path d="M4 38 Q9 34 14 36 M14 47 L12 43 M21 39 L18 40" fill="none" stroke="#317e48" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <ellipse cx="106" cy="162" rx="91" ry="7" fill="url(#shadow)"/>
+  <g id="frog">
+    <use href="#foot" fill="url(#paw)" stroke="#225539" stroke-width="2"/>
+    <use href="#foot" transform="translate(211 0) scale(-1 1)" fill="url(#paw)" stroke="#225539" stroke-width="2"/>
+    <path d="M33 154 Q39 149 44 152 M177 154 Q172 150 166 153" fill="none" stroke="#468e4d" stroke-width="2" stroke-linecap="round"/>
+    <path d="M68 105 C47 114 41 140 53 151 C66 163 147 166 163 151 C174 141 167 116 147 107Z"
+      fill="url(#body)" stroke="#236847" stroke-width="2"/>
+    <path d="M79 111 C62 118 60 143 76 150 C89 156 127 156 141 148 C154 140 147 119 133 113Z" fill="url(#belly)"/>
+    <g id="face">
+      <path d="M36 82 C36 71 42 60 49 54 C45 33 57 13 76 12 C94 9 106 22 110 34
+        C115 20 127 10 143 12 C164 14 174 32 170 51 C181 59 186 72 185 86
+        C184 114 151 130 108 131 C65 132 37 113 36 82Z"
+        fill="url(#skin)" stroke="#367a46" stroke-width="2.5"/>
+      <path d="M55 39 C56 25 68 17 80 18 M123 25 Q131 17 143 19"
+        fill="none" stroke="#e7ffac" stroke-opacity=".72" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M44 84 C48 111 77 123 108 123 C144 123 170 110 178 93"
+        fill="none" stroke="#e2f998" stroke-opacity=".27" stroke-width="2.2" stroke-linecap="round"/>
+      <g transform="translate(77 46)">
+        <use id="left-eye" href="#eye-open"/>
+        <use id="left-pupil" href="#pupil"/>
+      </g>
+      <g transform="translate(141 45)">
+        <use id="right-eye" href="#eye-open"/>
+        <use id="right-pupil" href="#pupil"/>
+      </g>
+      <ellipse cx="63" cy="91" rx="18" ry="11" fill="url(#blush)" transform="rotate(13 63 91)"/>
+      <ellipse cx="154" cy="90" rx="18" ry="11" fill="url(#blush)" transform="rotate(-13 154 90)"/>
+      <g fill="#f9d2a3" opacity=".78">
+        <circle cx="56" cy="89" r="1.5"/><circle cx="64" cy="91" r="1.3"/><circle cx="71" cy="90" r="1"/>
+        <circle cx="147" cy="89" r="1"/><circle cx="154" cy="90" r="1.3"/><circle cx="162" cy="88" r="1.5"/>
+      </g>
+      <path d="M103 78h.1 M114 78h.1" stroke="#4a9b51" stroke-width="2.4" stroke-linecap="round"/>
+      <g transform="translate(108 93)">
+        <use id="mouth" href="#mouth-smile"/>
+      </g>
+    </g>
+    <use href="#forearm" transform="translate(70 116) scale(-1 1) rotate(12)"/>
+    <g transform="translate(155 113)">
+      <use id="wave-arm" href="#forearm" transform="rotate(8)"/>
+    </g>
+  </g>
+</svg>

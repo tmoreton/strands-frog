@@ -1,0 +1,5 @@
+dependencies:
+  waveshare/esp32_s3_touch_amoled_1_75c: "3.0.0"
+  lvgl/lvgl: "9.5.0"
+  espressif/esp_tinyusb: "2.4.0"
+  espressif/mdns: "1.15.1"

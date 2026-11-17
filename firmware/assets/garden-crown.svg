@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="168" height="64" viewBox="0 0 168 64">
+  <title>Garden flower crown</title>
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#e2ef8c"/>
+      <stop offset=".55" stop-color="#83cc68"/>
+      <stop offset="1" stop-color="#458d51"/>
+    </linearGradient>
+    <linearGradient id="petal" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset=".7" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <g id="sprig">
+      <path d="M1 0Q6-9 16-7Q11 2 1 0Z" fill="url(#leaf)" stroke="#3b7546" stroke-width=".8"/>
+      <path d="M2-.5Q7-3 12-5" fill="none" stroke="#d5eb98" stroke-opacity=".75" stroke-width=".75"/>
+    </g>
+    <g id="flower">
+      <path d="M0-3C-7-8-3-14 1-12C5-13 8-9 5-4C13-7 16-1 12 3C11 6 7 6 5 5
+        C11 13 4 16 0 11C-4 17-12 11-7 5C-14 6-17 0-12-4C-9-7-4-5 0-3Z"
+        fill="currentColor" stroke="#603c54" stroke-opacity=".63" stroke-width=".8"/>
+      <path d="M0-3C-7-8-3-14 1-12C5-13 8-9 5-4C13-7 16-1 12 3
+        C8 5 4 4 0 5C-9 6-16 1-12-4C-9-7-4-5 0-3Z" fill="url(#petal)" opacity=".35"/>
+      <circle r="4.4" fill="#edaa55"/>
+      <circle cy="-.6" r="3.1" fill="#ffdf80"/>
+      <circle cx="-1" cy="-1.4" r="1" fill="#fff4c0"/>
+    </g>
+  </defs>
+  <path d="M26 43Q48 36 61 38Q76 40 84 49Q97 40 112 37Q125 34 143 43"
+    fill="none" stroke="#345f44" stroke-width="4" stroke-linecap="round"/>
+  <path d="M28 42Q46 36 61 38Q79 43 84 48Q98 40 111 37Q124 35 141 42"
+    fill="none" stroke="#9bd378" stroke-width="2" stroke-linecap="round"/>
+  <use href="#sprig" transform="translate(39 41) rotate(-32) scale(-1 .88)"/>
+  <use href="#sprig" transform="translate(53 38) rotate(201) scale(.96)"/>
+  <use href="#sprig" transform="translate(72 42) rotate(-63) scale(.95)"/>
+  <use href="#sprig" transform="translate(78 45) rotate(165) scale(.75)"/>
+  <use href="#sprig" transform="translate(95 44) rotate(-116) scale(.9)"/>
+  <use href="#sprig" transform="translate(108 39) rotate(-55) scale(.95)"/>
+  <use href="#sprig" transform="translate(125 39) rotate(-22) scale(1.05)"/>
+  <use href="#sprig" transform="translate(132 40) rotate(42) scale(.88)"/>
+  <use href="#flower" transform="translate(35 39) rotate(-19) scale(.61)" style="color:#a3bfff"/>
+  <use href="#flower" transform="translate(63 32) rotate(-14) scale(.89)" style="color:#f693ad"/>
+  <use href="#flower" transform="translate(85 43) rotate(9) scale(.67)" style="color:#fdf5dc"/>
+  <use href="#flower" transform="translate(109 31) rotate(12) scale(.87)" style="color:#cbaaf4"/>
+  <use href="#flower" transform="translate(132 36) rotate(20) scale(.62)" style="color:#f7b181"/>
+  <g fill="#fff1bb">
+    <circle cx="22" cy="38" r="1.6"/>
+    <circle cx="147" cy="40" r="1.55"/>
+    <circle cx="47" cy="25" r="1.65"/>
+    <circle cx="121" cy="21" r="1.5"/>
+  </g>
+</svg>

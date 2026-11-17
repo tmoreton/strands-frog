@@ -1,0 +1,11 @@
+.section .rodata.frog_frames, "a"
+.balign 4
+.global frog_frame_pixels
+frog_frame_pixels:
+.incbin "@frog_frames@"
+
+.section .rodata.frog_theme_overlays, "a"
+.balign 4
+.global frog_theme_overlay_pixels
+frog_theme_overlay_pixels:
+.incbin "@frog_theme_overlays@"

@@ -1,0 +1,159 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Serve authenticated Waveshare voice requests through a managed HTTPS endpoint.
+
+Metadata:
+  AWSToolsMetrics:
+    AWSAgentToolkit: aws-cloudformation@3
+
+Parameters:
+  ArtifactBucket:
+    Type: String
+    Description: Private S3 bucket in the function region containing the deployment ZIP.
+    AllowedPattern: '[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]'
+  ArtifactKey:
+    Type: String
+    Description: S3 object key for the deployment ZIP. Use a new key for each build.
+    MinLength: 1
+    MaxLength: 1024
+  SecretArn:
+    Type: String
+    Description: Full ARN of the same-account Secrets Manager secret used by the voice handler.
+    AllowedPattern: 'arn:aws[a-z0-9-]*:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]+'
+
+Resources:
+  VoiceLogs:
+    Type: AWS::Logs::LogGroup
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Keep function diagnostics for a short period and pre-create the group for scoped log permissions.
+    Properties:
+      LogGroupName: !Sub '/waveshare/${AWS::StackName}/voice'
+      RetentionInDays: 7
+
+  VoiceRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Limit runtime access to the single configuration secret and the function log streams.
+        must:
+          - The secret uses the default Secrets Manager encryption key.
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ReadVoiceSecret
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref SecretArn
+        - PolicyName: WriteVoiceLogs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${VoiceLogs}:log-stream:*'
+
+  VoiceFunction:
+    Type: AWS::Lambda::Function
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Transcribe the clip, run Strands, and synthesize the reply in one device request.
+        must:
+          - Validate the device bearer token before calling OpenRouter.
+          - Keep the function timeout below the HTTP integration timeout.
+    Properties:
+      Runtime: python3.12
+      Architectures:
+        - arm64
+      Handler: handler.lambda_handler
+      MemorySize: 512
+      Timeout: 28
+      Role: !GetAtt VoiceRole.Arn
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+      LoggingConfig:
+        LogGroup: !Ref VoiceLogs
+      Environment:
+        Variables:
+          VOICE_SECRET_ARN: !Ref SecretArn
+
+  VoiceApi:
+    Type: AWS::ApiGatewayV2::Api
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Give the device one HTTPS endpoint with a managed certificate.
+    Properties:
+      Name: !Sub '${AWS::StackName}-voice'
+      ProtocolType: HTTP
+
+  VoiceIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Pass binary audio requests to the handler as HTTP API proxy events.
+        must:
+          - Keep payload format 2.0 to match the Lambda handler.
+    Properties:
+      ApiId: !Ref VoiceApi
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !GetAtt VoiceFunction.Arn
+      PayloadFormatVersion: '2.0'
+      TimeoutInMillis: 29000
+
+  VoiceRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Expose the single device operation with authorization in the voice handler.
+        must:
+          - Keep the method and path aligned with the device and Lambda invoke permission.
+    Properties:
+      ApiId: !Ref VoiceApi
+      RouteKey: POST /voice
+      AuthorizationType: NONE
+      Target: !Sub 'integrations/${VoiceIntegration}'
+
+  VoiceInvokePermission:
+    Type: AWS::Lambda::Permission
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Permit only the deployed HTTP API route to invoke the handler.
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref VoiceFunction
+      Principal: apigateway.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${VoiceApi}/$default/POST/voice'
+
+  VoiceStage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn:
+      - VoiceRoute
+      - VoiceInvokePermission
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: Publish the device route and limit the rate of requests for the demo.
+    Properties:
+      ApiId: !Ref VoiceApi
+      StageName: '$default'
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 1
+        ThrottlingBurstLimit: 2
+
+Outputs:
+  VoiceUrl:
+    Description: HTTPS endpoint to configure on the Waveshare.
+    Value: !Sub '${VoiceApi.ApiEndpoint}/voice'

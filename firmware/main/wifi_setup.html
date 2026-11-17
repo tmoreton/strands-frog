@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <title>Strands Wi-Fi Setup</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #f4f4f4;
+      background: #000;
+      --green: #95eca0;
+      --muted: #aaa;
+      --line: #343434;
+    }
+    * { box-sizing: border-box; }
+    [hidden], input[type="hidden"] { display: none !important; }
+    body { margin: 0; }
+    main { max-width: 460px; margin: 0 auto; padding: 32px 22px 52px; }
+    header { margin-bottom: 34px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 650; }
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(89%) sepia(23%) saturate(803%) hue-rotate(62deg) brightness(98%) contrast(91%);
+    }
+    h1 { margin: 20px 0 8px; font-size: 34px; line-height: 1.12; letter-spacing: -.035em; }
+    h2 { margin: 0; font-size: 17px; }
+    p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .status { margin: 2px 0 12px; font-size: 14px; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li + li { margin-top: 8px; }
+    button, input { min-height: 48px; font: inherit; border-radius: 9px; }
+    button { cursor: pointer; }
+    button:disabled { cursor: default; opacity: .55; }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+    .network, input { width: 100%; background: #000; color: inherit; border: 1px solid var(--line); }
+    .network { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 13px; text-align: left; }
+    .network span:first-child { overflow-wrap: anywhere; }
+    .network span:last-child { color: var(--muted); font-size: 13px; flex-shrink: 0; }
+    .text-button { background: #000; color: var(--green); border: 0; padding: 0 2px; text-align: left; }
+    form { margin-top: 22px; }
+    .selection { margin-bottom: 18px; overflow-wrap: anywhere; }
+    label { display: block; margin: 0 0 15px; font-size: 14px; font-weight: 600; }
+    input { display: block; margin-top: 6px; padding: 10px 13px; font-size: 16px; }
+    .connect { width: 100%; margin-top: 4px; border: 0; color: #000; background: var(--green); font-weight: 750; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="brand"><img src="/frog.svg" alt="" width="48" height="48">Strands</div>
+      <h1>Connect to Wi-Fi</h1>
+      <p id="intro">Choose a 2.4 GHz network to get your Strands gadget online.</p>
+    </header>
+
+    <section id="nearby" aria-labelledby="nearby-title" hidden>
+      <div class="section-heading">
+        <h2 id="nearby-title">Nearby networks</h2>
+        <button class="text-button" type="button" id="scan" disabled>Scan again</button>
+      </div>
+      <p class="status" id="status" role="status">Looking for networks…</p>
+      <button class="text-button" type="button" id="manual">Enter a network name</button>
+      <ul id="networks" aria-label="Nearby Wi-Fi networks"></ul>
+    </section>
+
+    <form id="setup" method="post" action="/save" accept-charset="utf-8">
+      <input type="hidden" name="nonce" value="__SETUP_NONCE__">
+      <h2 id="selected-name" class="selection" hidden></h2>
+      <label id="ssid-field">Network name
+        <input id="ssid" name="ssid" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label id="password-field">Wi-Fi password
+        <input id="password" type="password" name="password" maxlength="64" autocomplete="new-password" autocapitalize="none" spellcheck="false">
+      </label>
+      <button class="connect" type="submit" id="connect">Connect</button>
+      <button class="text-button" type="button" id="change" hidden>Change network</button>
+    </form>
+  </main>
+  <script>
+    const nearby = document.getElementById('nearby');
+    const intro = document.getElementById('intro');
+    const scan = document.getElementById('scan');
+    const status = document.getElementById('status');
+    const networks = document.getElementById('networks');
+    const form = document.getElementById('setup');
+    const ssid = document.getElementById('ssid');
+    const password = document.getElementById('password');
+    const ssidField = document.getElementById('ssid-field');
+    const passwordField = document.getElementById('password-field');
+    const selectedName = document.getElementById('selected-name');
+    const connect = document.getElementById('connect');
+    const change = document.getElementById('change');
+    const manual = document.getElementById('manual');
+    let previousChoice = manual;
+
+    function choose(network, button) {
+      previousChoice = button;
+      ssid.value = network ? network.ssid : '';
+      password.value = '';
+      password.required = network !== null && network.secured;
+      ssidField.hidden = network !== null;
+      passwordField.hidden = network !== null && !network.secured;
+      selectedName.hidden = network === null;
+      selectedName.textContent = network ? network.ssid : '';
+      intro.hidden = true;
+      nearby.hidden = true;
+      change.hidden = false;
+      form.hidden = false;
+      if (!network) ssid.focus();
+      else if (network.secured) password.focus();
+      else connect.focus();
+    }
+
+    function showNetworks(items) {
+      networks.replaceChildren();
+      for (const item of items) {
+        if (!item || typeof item.ssid !== 'string' || !item.ssid) continue;
+        const network = {ssid: item.ssid, secured: item.secured !== false};
+        const row = document.createElement('li');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'network';
+        const name = document.createElement('span');
+        const security = document.createElement('span');
+        name.textContent = network.ssid;
+        security.textContent = network.secured ? 'Secured' : 'Open';
+        button.append(name, security);
+        button.addEventListener('click', () => choose(network, button));
+        row.append(button);
+        networks.append(row);
+      }
+    }
+
+    function scanFailed() {
+      status.textContent = 'Could not scan. Enter a network name or scan again.';
+      scan.disabled = false;
+    }
+
+    async function refresh(attempt = 0) {
+      try {
+        const response = await fetch('/networks', {cache: 'no-store'});
+        if (!response.ok) throw new Error('Network scan unavailable');
+        const result = await response.json();
+        if (result.scanning) {
+          if (attempt >= 15) return scanFailed();
+          window.setTimeout(() => refresh(attempt + 1), 900);
+          return;
+        }
+        if (!Array.isArray(result.networks)) throw new Error('Invalid network list');
+        showNetworks(result.networks);
+        status.textContent = networks.children.length ? 'Strongest signal first' : 'No networks found.';
+        scan.disabled = false;
+      } catch {
+        scanFailed();
+      }
+    }
+
+    manual.addEventListener('click', () => choose(null, manual));
+    change.addEventListener('click', () => {
+      password.value = '';
+      form.hidden = true;
+      intro.hidden = false;
+      nearby.hidden = false;
+      (previousChoice.isConnected ? previousChoice : manual).focus();
+    });
+    scan.addEventListener('click', async () => {
+      scan.disabled = true;
+      status.textContent = 'Looking for networks…';
+      try {
+        const response = await fetch('/scan', {method: 'POST'});
+        if (!response.ok) throw new Error('Scan could not start');
+        await refresh();
+      } catch {
+        scanFailed();
+      }
+    });
+    if (typeof fetch === 'function') {
+      nearby.hidden = false;
+      form.hidden = true;
+      refresh();
+    }
+  </script>
+</body>
+</html>
